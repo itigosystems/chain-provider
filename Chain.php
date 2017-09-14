@@ -94,7 +94,7 @@ final class Chain implements Provider, LoggerAwareInterface
      */
     public function getName(): string
     {
-        return 'chain';
+        return 'chain'; //@TODO Change here
     }
 
     /**
