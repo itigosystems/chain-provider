@@ -32,12 +32,16 @@ final class Chain implements Provider, LoggerAwareInterface
      */
     private $providers = [];
 
+    private $name = '';
+
     /**
      * @param Provider[] $providers
+     * @param Name $name
      */
-    public function __construct(array $providers = [])
+    public function __construct(array $providers = [], $name = 'chain')
     {
         $this->providers = $providers;
+        $this->name = $name;
     }
 
     /**
@@ -94,7 +98,8 @@ final class Chain implements Provider, LoggerAwareInterface
      */
     public function getName(): string
     {
-        return 'chain'; //@TODO Change here
+//        return 'chain';
+        return $this->name;
     }
 
     /**
