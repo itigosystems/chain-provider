@@ -49,22 +49,35 @@ final class Chain implements Provider, LoggerAwareInterface
      */
     public function geocodeQuery(GeocodeQuery $query): Collection
     {
+        $quotaExceeded = false;
         foreach ($this->providers as $provider) {
             try {
+                $quotaExceeded = false;
                 $result = $provider->geocodeQuery($query);
 
                 if (!$result->isEmpty()) {
                     return $result;
                 }
-            } catch (\Throwable $e) {
-                $this->log(
-                    'alert',
-                    sprintf('Provider "%s" could geocode address: "%s".', $provider->getName(), $query->getText()),
-                    ['exception' => $e]
-                );
+                else
+                {
+                    break;
+                }
+            }
+            catch (QuotaExceeded $e){
+                $quotaExceeded = true;
+            }
+            catch (\Throwable $e) {
+                break;
+//                $this->log(
+//                    'alert',
+//                    sprintf('Provider "%s" could geocode address: "%s".', $provider->getName(), $query->getText()),
+//                    ['exception' => $e]
+//                );
             }
         }
-
+        if($quotaExceeded){
+            throw new QuotaExceeded();
+        }
         return new AddressCollection();
     }
 
